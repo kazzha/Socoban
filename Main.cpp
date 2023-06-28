@@ -53,7 +53,7 @@ int main()
 
 	while (true)
 	{
-		Draw(stage, gStageWidth, gStageHeight);
+		 Draw(stage, gStageWidth, gStageHeight);
 		
 		if (IsClear(stage, gStageWidth, gStageHeight))
 		{
@@ -120,7 +120,7 @@ void Initialize(Object* stage, int w, int h, const char* data)
 
 		if (t != OBJ_UNKNOWN)
 		{
-			stage[y * w + x] == t;   // 위에서 y가 줄바꿈을 모두 하기 때문에 여기서는 x만 ++하면 됨
+			stage[y * w + x] = t;   // 위에서 y가 줄바꿈을 모두 하기 때문에 여기서는 x만 ++하면 됨
 			x++;
 		}
 		p++;
@@ -133,7 +133,7 @@ void Draw(const Object* stage, int w, int h)
 
 	const char table[]{ ' ', '#','.','o','O','p','P' }; 
 
-	for (int y = 0; y < h; y++)
+	 for (int y = 0; y < h; y++)
 	{
 		for (int x = 0; x < w; x++) 
 		{
@@ -190,6 +190,34 @@ void Update(Object* stage, char input, int w, int h)
 	{
 		std::cerr << "Invalid player position" << std::endl;
 		return;
+	}
+
+	int p = y * w + x;
+	int tp = ty * w + tx;  // x,y좌표를 인덱스로 바꾼 것
+
+	if (stage[tp] == OBJ_SPACE || stage[tp] == OBJ_GOAL)
+	{
+		stage[tp] = (stage[tp] == OBJ_GOAL) ? OBJ_PLAYER_0N_GOAL : OBJ_PLAYER;
+		stage[p] = (stage[p] == OBJ_PLAYER_0N_GOAL) ? OBJ_GOAL : OBJ_SPACE;
+	}
+	else if (stage[tp] == OBJ_BLOCK || stage[tp] == OBJ_BLOCK_ON_GOAL)
+	{
+		int tx2 = tx + dx;
+		int ty2 = ty + dy;
+		
+		if (tx2 < 0 || ty2 < 0 || tx2 >= w || ty2 >= h)
+		{
+			std::cerr << "Invalid block position" << std::endl;
+			return;
+		}
+
+		int tp2 = ty2 * w + tx2;
+		if (stage[tp2] == OBJ_SPACE || stage[tp2]==OBJ_GOAL)  //이동 가능한 위치
+		{
+			stage[tp2]=(stage[tp2]==OBJ_GOAL) ? OBJ_BLOCK_ON_GOAL : OBJ_BLOCK;
+			stage[tp] = (stage[tp] == OBJ_BLOCK_ON_GOAL) ? OBJ_PLAYER_0N_GOAL : OBJ_PLAYER;
+			stage[p] = (stage[p] == OBJ_PLAYER_0N_GOAL) ? OBJ_GOAL : OBJ_SPACE;
+		}
 	}
 }
 
