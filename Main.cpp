@@ -221,7 +221,7 @@ void Update(Object* stage, char input, int w, int h)
 	}
 }
 
-// 수정확인
+// 수정확인 22
 
 bool IsClear(const Object* stage, int w, int h)
 {
